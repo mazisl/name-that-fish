@@ -25,49 +25,52 @@ const initialFishes = [
   },
 ];
 
-const clonedFishArr = structuredClone(initialFishes);
-
 export class ClassApp extends Component {
-
   state = {
-    answersLeft: clonedFishArr,
     incorrectCount: 0,
     correctCount: 0,
-    showScore: true,
-    showFinalScore: false
   };
 
-  removeFishNameOnSubmit = () => {
-    if (this.state.answersLeft.length > 1) {
-      this.state.answersLeft.shift()
-      this.setState(() => {
-        return {answersLeft: this.state.answersLeft}
-      })
-    } else {
-      this.setState(() => {
-        return {showScore: false, showFinalScore: true}
-      })
-    }
-  }
-
-  handleCount = (answer) => {
-    answer === this.state.answersLeft[0].name ? this.setState(() => {
-      return {correctCount: this.state.correctCount + 1}
-    }) : this.setState(() => {
-      return {incorrectCount: this.state.incorrectCount + 1}
-    })
-  } 
-
   render() {
+    const { incorrectCount, correctCount } = this.state;
 
-    const {answersLeft, incorrectCount, correctCount, showScore, showFinalScore} = this.state;
-    const {removeFishNameOnSubmit, handleCount} = this;
+    const showFinalScore =
+      correctCount + incorrectCount === initialFishes.length;
+    const fishIndex = correctCount + incorrectCount;
+    const answersLeft = initialFishes.map((fish) => fish.name);
+    const answersLeftOnSubmit = answersLeft.slice(fishIndex);
+
+    const handleCount = (answer) => {
+      answer === initialFishes[fishIndex].name
+        ? this.setState(() => {
+            return { correctCount: correctCount + 1 };
+          })
+        : this.setState(() => {
+            return { incorrectCount: incorrectCount + 1 };
+          });
+    };
 
     return (
       <>
-        {showScore && <ClassScoreBoard answersLeft={answersLeft} incorrectCount={incorrectCount} correctCount={correctCount} />}
-        {showScore && <ClassGameBoard fishGameBoard={answersLeft} handleCount={handleCount} handleAnswersLeft={removeFishNameOnSubmit} />}
-        {showFinalScore && <ClassFinalScore correctCount={correctCount} />}
+        {!showFinalScore && (
+          <>
+            <ClassScoreBoard
+              incorrectCount={incorrectCount}
+              correctCount={correctCount}
+              answersLeftOnSubmit={answersLeftOnSubmit}
+            />
+            <ClassGameBoard
+              fishData={initialFishes[fishIndex]}
+              handleCount={handleCount}
+            />
+          </>
+        )}
+        {showFinalScore && (
+          <ClassFinalScore
+            correctCount={correctCount}
+            totalCount={initialFishes.length}
+          />
+        )}
       </>
     );
   }

@@ -5,15 +5,15 @@ export class ClassScoreBoard extends Component {
 
   render() {
 
-    const {answersLeft, incorrectCount, correctCount} = this.props;
+    const {answersLeftOnSubmit, incorrectCount, correctCount} = this.props;
 
     return (
       <div id="score-board">
         <div>Incorrect 🔻: {incorrectCount}</div>
         <div id="choices-left">
-          {answersLeft.map((answer) => (
-            <div key={answer.name} className="choice">
-              {answer.name}
+          {answersLeftOnSubmit.map((answer) => (
+            <div key={answer} className="choice">
+              {answer}
             </div>
           ))}
         </div>

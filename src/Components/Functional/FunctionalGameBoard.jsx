@@ -1,39 +1,31 @@
-import { useState } from 'react';
+import { useState } from "react";
 
 import "./styles/game-board.css";
 
-// initialFishes array moved to parent component
+export function FunctionalGameBoard({ fishData, handleCount }) {
+  const [fishNameInput, setFishNameInput] = useState("");
 
-export function FunctionalGameBoard({fishGameBoard, handleCount, handleAnswersLeft}) {
-
-  const [index, setIndex] = useState(0);
-  const [fishNameInput, setFishNameInput] = useState('');
-
-  const changeFishImage = () => {
-    if (index < fishGameBoard.length - 1) {
-      setIndex(index + 1)
-    } else {
-      setIndex(0)
-    }
-  }
+  const onSubmitHandler = (e) => {
+    e.preventDefault();
+    handleCount(fishNameInput);
+    setFishNameInput("");
+  };
 
   return (
     <div id="game-board">
       <div id="fish-container">
-        <img src={fishGameBoard[0].url} alt={fishGameBoard[0].name} />
+        <img src={fishData.url} alt={fishData.name} />
       </div>
-      <form id="fish-guess-form"
-        onSubmit={(e) => {
-          e.preventDefault();
-          handleCount(fishNameInput);
-          handleAnswersLeft();
-          changeFishImage();
-          setFishNameInput('');
-        }}>
+      <form id="fish-guess-form" onSubmit={onSubmitHandler}>
         <label htmlFor="fish-guess">What kind of fish is this?</label>
-        <input type="text" name="fish-guess" value={fishNameInput} onChange={(e) => {
-          setFishNameInput(e.target.value)
-        }} />
+        <input
+          type="text"
+          name="fish-guess"
+          value={fishNameInput}
+          onChange={(e) => {
+            setFishNameInput(e.target.value);
+          }}
+        />
         <input type="submit" />
       </form>
     </div>
